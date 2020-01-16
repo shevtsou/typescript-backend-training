@@ -1,13 +1,14 @@
-// lib/app.ts
-import express = require('express');
-
-// Create a new express application instance
-const app: express.Application = express();
-
-app.get('/', function (req, res) {
-  res.send('Hello World!');
-});
-
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
-});
+import Koa from 'koa'
+import { asClass, createContainer } from 'awilix'
+import { loadControllers, scopePerRequest } from 'awilix-koa'
+ 
+const app = new Koa()
+const container = createContainer().register({
+})
+app.use(scopePerRequest(container))
+// Loads all controllers in the `routes` folder
+// relative to the current working directory.
+// This is a glob pattern.
+app.use(loadControllers('routes/*.js', { cwd: __dirname }))
+ 
+app.listen(3000)
