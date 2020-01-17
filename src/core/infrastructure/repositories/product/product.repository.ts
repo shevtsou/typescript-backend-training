@@ -11,7 +11,7 @@ export default function productRepository({
 }: ServiceType): IProductRepository {
   async function addProduct(newProduct: NewProduct): Promise<ProductModel> {
       try {
-          console.log(productModel)
+          console.error('WE ARE HERE')
           const product = await productModel.create({
             name: newProduct.name
           });

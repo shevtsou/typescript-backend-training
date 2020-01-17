@@ -4,30 +4,48 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const koa_1 = __importDefault(require("koa"));
-const awilix_1 = require("awilix");
 const awilix_koa_1 = require("awilix-koa");
-const app = new koa_1.default();
-const container = awilix_1.createContainer().register({});
-app.use(awilix_koa_1.scopePerRequest(container));
-// Loads all controllers in the `routes` folder
-// relative to the current working directory.
-// This is a glob pattern.
-app.use(awilix_koa_1.loadControllers('routes/*.js', { cwd: __dirname }));
-console.log('STARTED');
-const database_1 = __importDefault(require("./core/infrastructure/store/database"));
-const index_1 = require("./core/infrastructure/repositories/product/index");
-const models_1 = require("./core/infrastructure/store/database/models");
-const databaseInstance = database_1.default();
+const bootstrap_1 = __importDefault(require("./bootstrap"));
 (async () => {
-    await databaseInstance.connectDb();
-    const repositoryInstance = index_1.productRepository({ productModel: models_1.ProductModel });
-    repositoryInstance.addProduct({ name: "test" });
+    const app = new koa_1.default();
+    const container = bootstrap_1.default();
+    const db = container.resolve('database');
+    const service = container.resolve('productService');
+    const model = container.resolve('productModel');
+    const sequelize = await db.connectDb();
+    await sequelize.sync({ force: true });
+    await service.addProduct({ name: 'test' });
+    console.log(await service.getProducts());
+    // ProductModel.create({name: 'test'});
+    // console.log(await ProductModel.findAll())
+    // await service.addProduct({name: "test"})
+    process.exit();
+    app.use(awilix_koa_1.scopePerRequest(container));
+    // Loads all controllers in the `routes` folder
+    // relative to the current working directory.
+    // This is a glob pattern.
+    app.use(awilix_koa_1.loadControllers('routes/*.js', { cwd: __dirname }));
+    console.log('STARTED');
+    // import database from './core/infrastructure/store/database'
+    // import { productRepository } from './core/infrastructure/repositories/product/index'
+    // import { ProductModel } from './core/infrastructure/store/database/models'
+    // const databaseInstance = database();
+    // (async () => {
+    //     const instance = await databaseInstance.connectDb()
+    //     await instance.sync({ force: true });
+    //     const repositoryInstance = productRepository({productModel: ProductModel})
+    //     await repositoryInstance.addProduct({name: "test"})
+    //     console.log(await repositoryInstance.getProducts())
+    //     await repositoryInstance.deleteProduct(1)
+    //     console.log(await repositoryInstance.getProducts())
+    // })()
+    app.listen(4000);
 })();
-app.listen(4000);
 // import { Sequelize } from 'sequelize-typescript';
 // import { DataTypes } from 'sequelize/types'
 // import ProductModel from './models/product.model';
 // import ProductModel from './core/infrastructure/store/database/models/product.model';
+// import { IProductService } from './core/application/product/product.interface';
 console.log(__dirname);
 // const sequelize =  new Sequelize({
 //     database: 'some_db',

@@ -5,13 +5,5 @@ export interface IProductService {
     getProducts(): Promise<ProductDto[]>;
     getProduct(productId: number): Promise<ProductDto>;
     updateProduct(id: number, newProduct: NewProductDto): Promise<ProductDto>;
-    deleteProduct(id: number): Promise<any>;
+    deleteProduct(id: number): Promise<void>;
 }
-
-// export interface IProductDomain {
-//     addProduct(newProduct: NewProductDto): Promise<ProductDto>;
-//     getProducts(): Promise<ProductDto[]>;
-//     getProduct(productId: number): Promise<ProductDto>;
-//     updateProduct(id: number, newProduct: NewProductDto): Promise<ProductDto>;
-//     deleteProduct(id: number): Promise<any>;
-// }

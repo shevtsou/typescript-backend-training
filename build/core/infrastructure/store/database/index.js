@@ -1,19 +1,21 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_typescript_1 = require("sequelize-typescript");
+const models_1 = require("./models");
 let instance = null;
 function default_1() {
     /***
      * create in-memory database connection
     */
     const connectDb = async () => {
+        //@ts-ignore
         instance = new sequelize_typescript_1.Sequelize({
             database: 'some_db',
             dialect: 'sqlite',
             username: 'root',
             password: '',
             storage: ':memory:',
-            models: [__dirname + '/models'],
+            models: [models_1.ProductModel],
         });
         return instance;
     };

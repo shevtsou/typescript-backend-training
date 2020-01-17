@@ -2,28 +2,32 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 function productRepository({ productModel }) {
     async function addProduct(newProduct) {
-        console.log('PRODUCT CREATED');
-        // const product = await productModel.create({
-        //     name: newProduct.name,
-        // })
-        const product = null;
-        return product;
+        try {
+            console.error('WE ARE HERE');
+            const product = await productModel.create({
+                name: newProduct.name
+            });
+            return product;
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
     async function getProductById(id) {
         return await productModel.findOne({
             where: {
                 id,
-                deleted: false,
+                deleted: null
             },
-            raw: true,
+            raw: true
         });
     }
     async function getProducts() {
         return await productModel.findAll({
             where: {
-                deleted: false,
+                deleted: null
             },
-            raw: true,
+            raw: true
         });
     }
     async function updateProduct(id, newProduct) {
@@ -42,7 +46,7 @@ function productRepository({ productModel }) {
         getProductById,
         getProducts,
         updateProduct,
-        deleteProduct,
+        deleteProduct
     };
 }
 exports.default = productRepository;
